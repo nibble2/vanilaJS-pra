@@ -1,0 +1,15 @@
+body h2 {
+    color: white;
+}
+
+.bigScreen {
+    background-color: #3498db;
+}
+
+.mediumScreen {
+    background-color: #1abc9c;
+}
+
+.smallScreen {
+    background-color: #34495e;
+}
