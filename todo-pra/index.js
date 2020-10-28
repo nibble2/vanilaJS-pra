@@ -10,9 +10,17 @@ const FINISH_LS = 'finished';
 let toDos = [];
 let finToDos = [];
 
-function backToDo(event) {
+// find li
+function findParentNode(event) {
     const btn = event.target;
     const li = btn.parentNode;
+
+    return li;
+}
+
+function backToDo(event) {
+    const li = findParentNode(event);
+
     const backText = li.childNodes[0].innerText;
 
     paintToDo(backText);
@@ -23,9 +31,11 @@ function saveFinToDos() {
     localStorage.setItem(FINISH_LS, JSON.stringify(finToDos));
 }
 
+
+// finished 버튼 클릭 
 function finishToDo(event) {
-    const btn = event.target;
-    const li = btn.parentNode;
+    const li = findParentNode(event);
+
     const finText = li.childNodes[0].innerText;
 
     paintFinToDo(finText);
@@ -33,8 +43,7 @@ function finishToDo(event) {
 }
 
 function deleteFinToDo(event) {
-    const btn = event.target;
-    const li = btn.parentNode;
+    const li = findParentNode(event);
 
     jsFinishedList.removeChild(li);
 
@@ -48,8 +57,7 @@ function deleteFinToDo(event) {
 }
 
 function deleteToDo(event) {
-    const btn = event.target;
-    const li = btn.parentNode;
+    const li = findParentNode(event);
 
     jsPendingList.removeChild(li);
 
