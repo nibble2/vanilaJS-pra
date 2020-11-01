@@ -9,23 +9,38 @@ const FINISHED = "FINISHED";
 let pendingTasks = [];
 let finishedTasks = [];
 
+function getTaskObject(text) {
+    return {
+        id: String(Date.now()),
+        text
+    };
+}
+
 function saveState() {
     localStorage.setItem(PENDING, JSON.stringify(pendingTasks));
     localStorage.setItem(FINISHED, JSON.stringify(finishedTasks));
 }
 
-function buildGenericLi(text) {
+function buildGenericLi(task) {
     const li = document.createElement("li");
     const span = document.createElement("span");
     const deleteBtn = document.createElement("button");
 
-    span.innerText = text;
+    span.innerText = task.text;
     deleteBtn.innerText = "❌";
 
     li.append(span, deleteBtn);
 
+    li.id = task.id;
+
     return li;
 
+}
+
+function findInPendig(taskId) {
+    return pendingTasks.find(function (toDo) {
+        return taskId === toDo.id;
+    });
 }
 
 function handleFinishClick(e) {
@@ -34,8 +49,9 @@ function handleFinishClick(e) {
     // pending화면에서 지우기
     li.parentNode.removeChild(li);
 
-
     //pending 로컬 스토리지 삭제
+    const task = findInPendig(li.id);
+    console.log(task);
     // const task = pendig 배열에서 아이디 일치하는 {id, text}를 가져온다 => findInPendig
     // 내가 선택한 li.id와 task.id가 일치하면 삭제 => removeFormPending
 
@@ -54,9 +70,8 @@ function handleFinishClick(e) {
 }
 
 function paintPendingTask(task) {
-    const li = buildGenericLi(task.text);
+    const li = buildGenericLi(task);
     const completBtn = document.createElement("button");
-    const newId = pendingTasks.length + 1;
 
     completBtn.addEventListener("click", handleFinishClick);
 
@@ -65,23 +80,12 @@ function paintPendingTask(task) {
     //화면에 그림
     pendingList.append(li);
 
-    const toDoObj = {
-        id: newId,
-        text: text
-    }
-
-    pendingTasks.push(toDoObj);
+    pendingTasks.push(task);
 
     saveState();
 
 }
 
-function getTaskObject(text) {
-    return {
-        id: String(Date.now()),
-        text
-    },
-}
 
 function handleSubmit(e) {
     e.preventDefault();
