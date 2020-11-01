@@ -34,7 +34,6 @@ function buildGenericLi(task) {
     li.id = task.id;
 
     return li;
-
 }
 
 function removeFormPending(taskId) {
@@ -56,35 +55,38 @@ function handleFinishClick(e) {
     li.parentNode.removeChild(li);
 
     //pending 로컬 스토리지 삭제
-    const task = findInPendig(li.id);
-    removeFormPending(li.id);
-    console.log(pendingTasks);
-
     // const task = pendig 배열에서 아이디 일치하는 {id, text}를 가져온다 => findInPendig
+    const task = findInPendig(li.id);
     // 내가 선택한 li.id와 task.id가 일치하면 삭제 => removeFormPending
+    removeFormPending(li.id);
 
-    //finished 화면에 출력
-    const genericLi = buildGenericLi(text);
+    //finished 배열에 푸쉬
+    finishedTasks.push(task);
+
+    //finished 화면에 출력 => paintFinishedTask
+    paintFinishedTask(task);
+
+    // 상태 저장
+    saveState();
+}
+
+function paintFinishedTask(task) {
+    const genericLi = buildGenericLi(task);
     const backBtn = document.createElement("button");
     backBtn.innerText = "⏪";
 
     genericLi.append(backBtn);
-    finishedList.append(li);
-    //finished 로컬 스토리지 추가
-    //새로운 task = {id, text}를 가져다가 그대로 넣음
-
-    // 상태 저장
-    //saveState();
+    finishedList.append(genericLi);
 }
 
 function paintPendingTask(task) {
     const li = buildGenericLi(task);
     const completBtn = document.createElement("button");
+    completBtn.innerText = "✅";
 
     completBtn.addEventListener("click", handleFinishClick);
-
-    completBtn.innerText = "✅";
     li.append(completBtn);
+
     //화면에 그림
     pendingList.append(li);
 
