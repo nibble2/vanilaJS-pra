@@ -37,6 +37,12 @@ function buildGenericLi(task) {
 
 }
 
+function removeFormPending(taskId) {
+    pendingTasks = pendingTasks.filter(function (toDo) {
+        return taskId !== toDo.id;
+    });
+}
+
 function findInPendig(taskId) {
     return pendingTasks.find(function (toDo) {
         return taskId === toDo.id;
@@ -51,7 +57,9 @@ function handleFinishClick(e) {
 
     //pending 로컬 스토리지 삭제
     const task = findInPendig(li.id);
-    console.log(task);
+    removeFormPending(li.id);
+    console.log(pendingTasks);
+
     // const task = pendig 배열에서 아이디 일치하는 {id, text}를 가져온다 => findInPendig
     // 내가 선택한 li.id와 task.id가 일치하면 삭제 => removeFormPending
 
