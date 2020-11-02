@@ -21,6 +21,30 @@ function saveState() {
     localStorage.setItem(FINISHED, JSON.stringify(finishedTasks));
 }
 
+function removeFormFinished(taskId) {
+    finishedTasks = finishedTasks.filter(function (toDo) {
+        return toDo.id !== taskId;
+    });
+}
+
+function removeFormPending(taskId) {
+    pendingTasks = pendingTasks.filter(function (toDo) {
+        return toDo.id !== taskId;
+    });
+}
+
+function deleteTask(e) {
+    // 내가 선택한 li.id와 q배열 안에 있는 toDo.id가 일치하지 않은 것만 보내기
+    const li = e.target.parentNode;
+
+    li.parentNode.removeChild(li);
+
+    removeFormPending(li.id);
+    removeFormFinished(li.id);
+
+    saveState();
+}
+
 function buildGenericLi(task) {
     const li = document.createElement("li");
     const span = document.createElement("span");
@@ -28,7 +52,7 @@ function buildGenericLi(task) {
 
     span.innerText = task.text;
     deleteBtn.innerText = "❌";
-
+    deleteBtn.addEventListener("click", deleteTask);
     li.append(span, deleteBtn);
 
     li.id = task.id;
@@ -44,6 +68,12 @@ function removeFormPending(taskId) {
 
 function findInPendig(taskId) {
     return pendingTasks.find(function (toDo) {
+        return taskId === toDo.id;
+    });
+}
+
+function findInFinished(taskId) {
+    return finishedTasks.find(function (toDo) {
         return taskId === toDo.id;
     });
 }
@@ -70,47 +100,74 @@ function handleFinishClick(e) {
     saveState();
 }
 
+function handleBackClick(e) {
+    const li = e.target.parentNode;
+    li.parentNode.removeChild(li);
+
+    const task = findInFinished(li.id);
+    console.log(task);
+
+    removeFormFinished(task.id);
+
+    paintPendingTask(task)
+
+    saveState();
+    //pending배열에 추가
+    //pending 로컬스토리지에 추가
+}
+
 function paintFinishedTask(task) {
     const genericLi = buildGenericLi(task);
     const backBtn = document.createElement("button");
     backBtn.innerText = "⏪";
+    backBtn.addEventListener("click", handleBackClick);
 
     genericLi.append(backBtn);
     finishedList.append(genericLi);
 }
 
 function paintPendingTask(task) {
-    const li = buildGenericLi(task);
+    const genericLi = buildGenericLi(task);
     const completBtn = document.createElement("button");
     completBtn.innerText = "✅";
 
     completBtn.addEventListener("click", handleFinishClick);
-    li.append(completBtn);
+    genericLi.append(completBtn);
 
     //화면에 그림
-    pendingList.append(li);
-
-    pendingTasks.push(task);
-
-    saveState();
-
+    pendingList.append(genericLi);
 }
 
+function restoreState() {
+    pendingTasks.forEach(function (task) {
+        paintPendingTask(task);
+    });
+    finishedTasks.forEach(function (task) {
+        paintFinishedTask(task);
+    });
+}
+
+function loadState() {
+    pendingTasks = JSON.parse(localStorage.getItem(PENDING)) || [];
+    finishedTasks = JSON.parse(localStorage.getItem(FINISHED)) || [];
+}
 
 function handleSubmit(e) {
     e.preventDefault();
     const taskObj = getTaskObject(input.value);
-    paintPendingTask(taskObj);
     input.value = "";
+    paintPendingTask(taskObj);
+    savePendingTask(taskObj);
+    pendingTasks.push(task);
+
+    saveState();
 }
 
-function loadState() {
-    pendingList = JSON.parse(localStorage.getItem(PENDING)) || [];
-    findInFinished = JSON.parse(localStorage.getItem(FINISHED)) || [];
-}
 
 function init() {
     form.addEventListener("submit", handleSubmit);
+    loadState();
+    restoreState();
 }
 
 init();
