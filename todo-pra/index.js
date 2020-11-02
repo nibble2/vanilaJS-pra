@@ -126,6 +126,10 @@ function paintFinishedTask(task) {
     finishedList.append(genericLi);
 }
 
+function savePendingTasks(task) {
+    pendingTasks.push(task);
+}
+
 function paintPendingTask(task) {
     const genericLi = buildGenericLi(task);
     const completBtn = document.createElement("button");
@@ -136,6 +140,8 @@ function paintPendingTask(task) {
 
     //화면에 그림
     pendingList.append(genericLi);
+    //로딩할 때 같은 것을 두번 저장하지 않기 위해 
+    //push부분을 따로 함수로 만들어 주었다.
 }
 
 function restoreState() {
@@ -158,8 +164,6 @@ function handleSubmit(e) {
     input.value = "";
     paintPendingTask(taskObj);
     savePendingTask(taskObj);
-    pendingTasks.push(task);
-
     saveState();
 }
 
