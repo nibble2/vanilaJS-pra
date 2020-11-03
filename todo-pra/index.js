@@ -78,6 +78,10 @@ function findInFinished(taskId) {
     });
 }
 
+function addToFininshed(task) {
+    finishedTasks.push(task);
+}
+
 function handleFinishClick(e) {
     const li = e.target.parentNode;
 
@@ -91,7 +95,7 @@ function handleFinishClick(e) {
     removeFormPending(li.id);
 
     //finished 배열에 푸쉬
-    finishedTasks.push(task);
+    savePendingTask(task);
 
     //finished 화면에 출력 => paintFinishedTask
     paintFinishedTask(task);
@@ -111,6 +115,8 @@ function handleBackClick(e) {
 
     paintPendingTask(task)
 
+    savePendingTask(task);
+
     saveState();
     //pending배열에 추가
     //pending 로컬스토리지에 추가
@@ -126,7 +132,7 @@ function paintFinishedTask(task) {
     finishedList.append(genericLi);
 }
 
-function savePendingTasks(task) {
+function savePendingTask(task) {
     pendingTasks.push(task);
 }
 
