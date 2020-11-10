@@ -60,15 +60,9 @@ function buildGenericLi(task) {
     return li;
 }
 
-function removeFormPending(taskId) {
-    pendingTasks = pendingTasks.filter(function (toDo) {
-        return taskId !== toDo.id;
-    });
-}
-
 function findInPendig(taskId) {
     return pendingTasks.find(function (toDo) {
-        return taskId === toDo.id;
+        return toDo.id === taskId;
     });
 }
 
@@ -95,7 +89,7 @@ function handleFinishClick(e) {
     removeFormPending(li.id);
 
     //finished 배열에 푸쉬
-    savePendingTask(task);
+    addToFininshed(task);
 
     //finished 화면에 출력 => paintFinishedTask
     paintFinishedTask(task);
