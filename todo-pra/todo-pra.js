@@ -15,19 +15,29 @@ function getTaskObject(text) {
     };
 }
 
-// function deleteTask(e) {
-//     //화면에서 삭제
-//     const li = e.target.parentNode;
-//     li.parentNode.removeChild(li);
-//     //pendingTasks 배열에서 삭지
-//     //finishedTasks 배열에서 삭제
-//     //로컬스토리지 상태 저장하기
-// }
+function deleteTask(e) {
+    //화면에서 삭제
+    const li = e.target.parentNode;
+    li.parentNode.removeChild(li);
+
+    removeFormPending(li.id);
+    removeFormFinished(li.id);
+    saveState();
+    //pendingTasks 배열에서 삭제
+
+    //finishedTasks 배열에서 삭제
+    //로컬스토리지 상태 저장하기
+}
 
 function addToFininshed(task) {
     console.log(task);
     finishedTasks.push(task);
+}
 
+function removeFormFinished(taskId) {
+    finishedTasks = finishedTasks.filter(function (task) {
+        return task.id !== taskId;
+    });
 }
 
 function removeFormPending(taskId) {
@@ -36,12 +46,35 @@ function removeFormPending(taskId) {
     });
 }
 
+function findInFinished(taskId) {
+    return finishedTasks.find(function (task) {
+        return task.id === taskId;
+    });
+}
+
+function handleBackClick(e) {
+    // finished 화면에서 삭제
+    li = e.target.parentNode;
+    li.parentNode.removeChild(li);
+    //finished 배열에서 일치하는 것 찾아서 task
+    const task = findInFinished(li.id);
+
+    //finished 배열에서 삭제
+    removeFormFinished(li.id);
+    // pending화면에 추가
+    paintPendingTask(task);
+    //pending 배열에 추가
+    addToPendingTask(task);
+    //상태 저장
+    saveState();
+}
+
 function paintFinishedTask(task) {
     const li = buildGenericLi(task);
     const backBtn = document.createElement("button");
 
     backBtn.innerText = "⏪";
-    // completBtn.addEventListener("click", handleBackClick);
+    backBtn.addEventListener("click", handleBackClick);
     li.append(backBtn);
 
     finishedList.append(li);
@@ -70,12 +103,14 @@ function handleFinishedClick(e) {
 
     // finishedTasks 배열에 저장하기
     addToFininshed(task);
+    // finishedTasks.push(task);
 
     saveState();
 }
 
 function saveState() {
     localStorage.setItem(PENDING, JSON.stringify(pendingTasks));
+    localStorage.setItem(FINISHED, JSON.stringify(finishedTasks));
 }
 
 function addToPendingTask(task) {
@@ -89,7 +124,7 @@ function buildGenericLi(task) {
     li.id = task.id;
     span.innerText = task.text;
     deleteBtn.innerText = "❌"
-    // deleteBtn.addEventListener("click", deleteTask);
+    deleteBtn.addEventListener("click", deleteTask);
     li.append(span, deleteBtn)
     return li;
 }
@@ -122,14 +157,14 @@ function restoreState() {
     pendingTasks.forEach(function (task) {
         paintPendingTask(task);
     });
-    // finishedTasks.forEach(function (task) {
-    //     paintFinishedTask(task);
-    // })
+    finishedTasks.forEach(function (task) {
+        paintFinishedTask(task);
+    });
 }
 
 function loadState() {
     pendingTasks = JSON.parse(localStorage.getItem(PENDING)) || [];
-    // finishedTasks = JSON.parse(localStorage.getItem(FINISHED)) || [];
+    finishedTasks = JSON.parse(localStorage.getItem(FINISHED)) || [];
 }
 
 function init() {
