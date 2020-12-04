@@ -8,26 +8,27 @@
 
 <body>
     <h1>Random Number Game</h1>
-    <h3>Generate a number between 0 and <span class="rangeValue">100</span></h3>
-    <input type="range" min="0" max="200" list="tickmarks" class="js-input" />
 
-    <datalist id="tickmarks">
-        <option value="50"></option>
-        <option value="100"></option>
-        <option value="150"></option>
-        <option value="200"></option>
-    </datalist>
     <div>
-        <span>
-            Guess the Number:
-            <input type="number" class="myNumber" />
-        </span>
-        <input type="button" value="Play!" class="playBtn"></button>
+        <h3 class="js-title">Generate a number between 0 and <span>100</span></h3>
+        <datalist id="number">
+            <option value="50"></option>
+            <option value="100"></option>
+            <option value="150"></option>
+            <option value="200"></option>
+        </datalist>
+        <input list="number" id="js-range" type="range" min="5" max="200" value="5" step="5" />
     </div>
-    <div class="div-result">
-        <span class="result-span"></span>
-        <div class="result">You Win!</div>
+
+    <form id="js-guess">
+        <label>Guess the number: </label>
+        <input type="number" max="200" min="5" />
+        <button>Play</button>
+    </form>
+    <div class="js-result">
+        <span></span>
     </div>
+
     <script src="index.js"></script>
 </body>
 
