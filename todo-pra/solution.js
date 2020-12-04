@@ -94,13 +94,15 @@ function handleFinishClick(e) {
     const task = findInPending(li.id);
     // pending배열에서 선택된 todo 배열 리턴
     //{id: ~, text: ~~}
+
+    //pendingTasks 배열에서 삭제
     removeFormPending(li.id);
     //finishe 배열에 푸시
     addToFininshed(task);
     //finishe 화면에 그리기
     paintFinishedTask(task);
     //저장
-    saveState(task);
+    saveState();
 }
 
 //submit 5
