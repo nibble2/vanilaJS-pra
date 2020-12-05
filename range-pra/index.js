@@ -1,43 +1,30 @@
-// <⚠️ DONT DELETE THIS ⚠️>
-import "./styles.css";
-// <⚠️ /DONT DELETE THIS ⚠️>
+const range = document.getElementById("js-range");
+const title = document.querySelector(".js-title");
+const guessForm = document.getElementById("js-guess");
+const result = document.getElementById("js-result");
 
-const input = document.querySelector(".js-input");
-const rangeValue = document.querySelector(".rangeValue");
-const playBtn = document.querySelector(".playBtn");
-const myNumber = document.querySelector(".myNumber");
-const resultDiv = document.querySelector(".div-result"),
-    resultSpan = resultDiv.querySelector(".result-span"),
-    result = resultDiv.querySelector(".result");
-
-function makeRandomNumber() {
-    //나의 범위까지 랜덤 숫자 생성
-    return Math.floor(Math.random() * parseInt(rangeValue.innerHTML) + 1);
+function handleRangeChange(e) {
+    const selectedRange = title.querySelector("span");
+    selectedRange.innerHTML = range.value;
 }
 
-function handleClick() {
-    resultDiv.style.display = "block";
-    //랜덤 숫자 = = 기계숫자
-    const randomNumber = makeRandomNumber();
-    //내가 입력한 숫자
-    const number = parseInt(myNumber.value);
-
-    resultSpan.innerHTML = `You chose: ${number} machine chose: ${randomNumber}`;
-
-    if (number === randomNumber) {
-        result.innerHTML = "You Win!!";
-    } else {
-        result.innerHTML = "You lost!!";
+function handleGuessSubmit(e) {
+    e.preventDefault();
+    const guessInput = guessForm.querySelector("input");
+    if (guessInput.value === "") {
+        return;
     }
+    const max = range.value;
+
+    const random = Math.ceil(Math.random() * max);
+    const userGuess = parseInt(guessInput.value, 10);
+    const resultSpan = result.querySelector("span");
+    resultSpan.innerHTML = `
+    You chose: ${userGuess},
+    the machine chose: ${random}<br />
+    <strong>${userGuess === random ? "You won!" : "You lost!"}</strong>
+    `;
 }
 
-function handleChange(e) {
-    rangeValue.innerHTML = e.target.value;
-}
-
-function init() {
-    input.addEventListener("change", handleChange);
-    playBtn.addEventListener("click", handleClick);
-}
-
-init();
+guessForm.addEventListener("submit", handleGuessSubmit);
+range.addEventListener("input", handleRangeChange);
